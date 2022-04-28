@@ -53,7 +53,6 @@ exports.uploadFiles = (required = true) => {
         return cb(new Error("Please upload the valid pdf file", false));
       }
     }
-
     cb(null, true);
   };
 
@@ -78,7 +77,7 @@ exports.uploadFiles = (required = true) => {
         });
 
       if (required) {
-        if (!req.files.image && req.files.pdf && !err)
+        if (!req.files.image && !req.files.pdf && !err)
           return res.status(400).json({
             status: "error",
             message: "Please upload file image and pdf",

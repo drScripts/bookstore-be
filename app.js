@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
 const booksRouter = require("./routes/books");
+const promoBooksRouter = require("./routes/promo-books");
 
 const app = express();
 const prefix = "/api/v1";
@@ -15,5 +16,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(prefix, booksRouter);
+app.use(prefix, promoBooksRouter);
 
 module.exports = app;
