@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   UserProfile.init(
     {
-      male: {
+      gender: {
         type: DataTypes.ENUM,
         values: ["male", "female"],
         allowNull: true,

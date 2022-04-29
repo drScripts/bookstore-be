@@ -19,6 +19,8 @@ const deleteFile = (filename, fileFolder) => {
     `../public/upload/${fileFolder}/${filename}`
   );
 
+  console.log(filePath);
+
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
   }
