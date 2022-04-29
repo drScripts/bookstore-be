@@ -6,6 +6,7 @@ const logger = require("morgan");
 const booksRouter = require("./routes/books");
 const promoBooksRouter = require("./routes/promo-books");
 const usersRouter = require("./routes/users");
+const cartRouter = require("./routes/carts");
 
 const app = express();
 const prefix = "/api/v1";
@@ -19,5 +20,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(prefix, booksRouter);
 app.use(prefix, promoBooksRouter);
 app.use(prefix, usersRouter);
+app.use(prefix, cartRouter);
 
 module.exports = app;

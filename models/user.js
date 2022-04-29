@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "profile",
         foreignKey: "userId",
       });
+
+      User.hasMany(models.Cart, {
+        as: "carts",
+        foreignKey: "userId",
+      });
     }
   }
   User.init(
