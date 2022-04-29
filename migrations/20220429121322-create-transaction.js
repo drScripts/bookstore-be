@@ -1,5 +1,5 @@
 "use strict";
-const { QueryInterface, DataTypes } = require("sequelize");
+const { DataTypes, QueryInterface } = require("sequelize");
 
 module.exports = {
   /**
@@ -8,62 +8,61 @@ module.exports = {
    * @param {DataTypes} Sequelize
    */
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_profiles", {
+    await queryInterface.createTable("transactions", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      gender: {
+      status: {
         type: Sequelize.ENUM,
-        values: ["male", "female"],
+        allowNull: false,
+        defaultValue: "pending",
+        values: ["pending", "cancel", "approve"],
+      },
+      total: {
+        type: Sequelize.BIGINT,
         allowNull: true,
       },
-      phoneNumber: {
+      paymentType: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      address: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      profilePict: {
+      paymentUrl: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      provinceId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      regionId: {
-        type: Sequelize.INTEGER,
+      paymentToken: {
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       userId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
-        onDelete: "CASCADE",
+        allowNull: false,
         references: {
           key: "id",
           model: {
             tableName: "users",
           },
         },
+        onDelete: "CASCADE",
+      },
+      rawBody: {
+        type: Sequelize.JSON,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: new Date(),
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("user_profiles");
+    await queryInterface.dropTable("transactions");
   },
 };

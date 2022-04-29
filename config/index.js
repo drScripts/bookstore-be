@@ -10,4 +10,6 @@ module.exports = {
   dbDialect: process.env.DATABASE_DIALECT,
   allowedClientOrigin: process.env.ALLOWED_CLIENT_ORIGIN,
   maxFileSize: parseInt(process.env.APP_ALLOWED_FILE_SIZE) || 2,
+  midtransServerKey: process.env.MIDTRANS_SERVER_KEY,
+  midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
 };

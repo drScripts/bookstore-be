@@ -1,6 +1,5 @@
 "use strict";
 const { QueryInterface, DataTypes } = require("sequelize");
-
 module.exports = {
   /**
    *
@@ -8,62 +7,49 @@ module.exports = {
    * @param {DataTypes} Sequelize
    */
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_profiles", {
+    await queryInterface.createTable("transaction_items", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      gender: {
-        type: Sequelize.ENUM,
-        values: ["male", "female"],
-        allowNull: true,
-      },
-      phoneNumber: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      address: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      profilePict: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      provinceId: {
+      idTransaction: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      regionId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      userId: {
         allowNull: false,
-        type: Sequelize.INTEGER,
-        onDelete: "CASCADE",
         references: {
           key: "id",
           model: {
-            tableName: "users",
+            tableName: "transactions",
           },
         },
+        onDelete: "CASCADE",
+      },
+      idBook: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          key: "id",
+          model: {
+            tableName: "books",
+          },
+        },
+      },
+      qty: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: new Date(),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: new Date(),
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("user_profiles");
+    await queryInterface.dropTable("transaction_items");
   },
 };

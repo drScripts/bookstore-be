@@ -16,7 +16,6 @@ module.exports = (req, res, next) => {
     });
 
   const token = req.headers.authorization.split("Bearer ").pop();
-
   let user;
   try {
     user = verify(token, jwtSecret);

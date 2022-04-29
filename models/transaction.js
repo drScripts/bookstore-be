@@ -1,5 +1,6 @@
 "use strict";
 const { Model, Sequelize, DataTypes } = require("sequelize");
+const transactionlog = require("./transactionlog");
 
 /**
  *
@@ -8,64 +9,67 @@ const { Model, Sequelize, DataTypes } = require("sequelize");
  * @returns
  */
 module.exports = (sequelize, DataTypes) => {
-  class UserProfile extends Model {
+  class Transaction extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      UserProfile.belongsTo(models.User, {
+      Transaction.belongsTo(models.User, {
         as: "user",
         foreignKey: "userId",
-        onDelete: "CASCADE",
+      });
+
+      Transaction.hasMany(models.TransactionItem, {
+        as: "transactionLogs",
+        foreignKey: "idTransaction",
+      });
+
+      Transaction.hasMany(models.TransactionItem, {
+        as: "transactionItems",
+        foreignKey: "idTransaction",
       });
     }
   }
-  UserProfile.init(
+  Transaction.init(
     {
-      gender: {
+      status: {
         type: DataTypes.ENUM,
-        values: ["male", "female"],
+        allowNull: false,
+        values: ["pending", "approve", "cancel"],
+        defaultValue: "pending",
+      },
+      total: {
+        type: DataTypes.BIGINT,
         allowNull: true,
       },
-      phoneNumber: {
+      paymentType: {
         allowNull: true,
         type: DataTypes.STRING,
       },
-      address: {
+      paymentUrl: {
+        type: DataTypes.TEXT,
         allowNull: true,
-        type: DataTypes.STRING,
       },
-      profilePict: {
+      paymentToken: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
       userId: {
-        allowNull: true,
         type: DataTypes.INTEGER,
-        onDelete: "CASCADE",
-        references: {
-          key: "id",
-          model: {
-            tableName: "users",
-          },
-        },
+        allowNull: false,
       },
-      provinceId: {
+      rawBody: {
+        type: DataTypes.JSON,
         allowNull: true,
-        type: DataTypes.INTEGER,
-      },
-      regionId: {
-        allowNull: true,
-        type: DataTypes.INTEGER,
       },
     },
     {
       sequelize,
-      tableName: "user_profiles",
-      modelName: "UserProfile",
+      tableName: "transactions",
+      modelName: "Transaction",
     }
   );
-  return UserProfile;
+  return Transaction;
 };

@@ -1,45 +1,38 @@
 "use strict";
-const { QueryInterface, DataTypes } = require("sequelize");
+const { QueryInterface, Sequelize } = require("sequelize");
 
 module.exports = {
   /**
    *
    * @param {QueryInterface} queryInterface
-   * @param {DataTypes} Sequelize
+   * @param {Sequelize} Sequelize
    */
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("carts", {
+    await queryInterface.createTable("transaction_logs", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userId: {
+      idTransaction: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           key: "id",
           model: {
-            tableName: "users",
+            tableName: "transactions",
           },
         },
         onDelete: "CASCADE",
       },
-      bookId: {
-        type: Sequelize.INTEGER,
+      status: {
+        type: Sequelize.STRING,
         allowNull: false,
-        references: {
-          key: "id",
-          model: {
-            tableName: "books",
-          },
-        },
       },
-      qty: {
-        type: Sequelize.INTEGER,
+      rawBody: {
+        type: Sequelize.JSON,
         allowNull: false,
-        defaultValue: 1,
       },
       createdAt: {
         allowNull: false,
@@ -52,6 +45,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("carts");
+    await queryInterface.dropTable("transaction_logs");
   },
 };
