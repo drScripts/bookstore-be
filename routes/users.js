@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { create, login, update } = require("../controllers/users");
+const { create, login, update, profile } = require("../controllers/users");
 const authMiddleware = require("../middleware/auth");
 const uploadFile = require("../middleware/uploadFIle");
 
@@ -10,5 +10,6 @@ router.patch(
   [authMiddleware, uploadFile("profile", false)],
   update
 );
+router.get("/profile", authMiddleware, profile);
 
 module.exports = router;
