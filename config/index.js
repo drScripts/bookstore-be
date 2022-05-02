@@ -12,4 +12,6 @@ module.exports = {
   maxFileSize: parseInt(process.env.APP_ALLOWED_FILE_SIZE) || 2,
   midtransServerKey: process.env.MIDTRANS_SERVER_KEY,
   midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
+  rajaOngkirKey: process.env.RAJA_ONGKIR_KEY,
+  rajaOngkirBaseRegion: process.env.RAJA_ONGKIR_REGION_PLACE,
 };

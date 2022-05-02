@@ -8,6 +8,7 @@ const promoBooksRouter = require("./routes/promo-books");
 const usersRouter = require("./routes/users");
 const cartRouter = require("./routes/carts");
 const transactionRouter = require("./routes/transaction");
+const shipmentRouter = require("./routes/shipment");
 
 const app = express();
 const prefix = "/api/v1";
@@ -23,5 +24,6 @@ app.use(prefix, promoBooksRouter);
 app.use(prefix, usersRouter);
 app.use(prefix, cartRouter);
 app.use(prefix, transactionRouter);
+app.use(prefix, shipmentRouter);
 
 module.exports = app;
