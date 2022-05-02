@@ -7,6 +7,9 @@ require("dotenv").config();
 const app = require("../app");
 const debug = require("debug")("bookstore-be:server");
 const http = require("http");
+const { Server } = require("socket.io");
+const { allowedClientOrigin } = require("../config");
+const socketHandler = require("../socket");
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +23,18 @@ app.set("port", port);
  */
 
 const server = http.createServer(app);
+
+/**
+ * Create socket connection
+ */
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedClientOrigin,
+  },
+});
+
+socketHandler(io);
 
 /**
  * Listen on provided port, on all network interfaces.
