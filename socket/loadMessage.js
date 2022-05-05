@@ -17,6 +17,7 @@ module.exports = async (socket, recipientId, user) => {
 
     socket.emit("message loaded", messages);
   } catch (err) {
+    console.log(err);
     throw new Error("can't load messages");
   }
 };

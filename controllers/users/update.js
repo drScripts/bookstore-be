@@ -24,6 +24,12 @@ module.exports = async (req, res) => {
       name: Joi.string().messages({
         "string.base": "User name must be a type of string",
       }),
+      provinceId: Joi.number().messages({
+        "number.base": "Province id must be a type of number",
+      }),
+      regionId: Joi.number().messages({
+        "region.base": "Region id must be a type of number",
+      }),
     });
 
     const validation = scheme.validate(req.body);
@@ -35,16 +41,22 @@ module.exports = async (req, res) => {
       });
 
     const { id } = req.user;
-    const { gender, phoneNumber, address, name } = req.body;
+    const { gender, phoneNumber, address, name, provinceId, regionId } =
+      req.body;
 
     const prevUser = await User.findByPk(id, {
       include: "profile",
     });
 
-    const profileUpdate = { gender, phoneNumber, address };
+    const profileUpdate = {
+      gender,
+      phoneNumber,
+      address,
+      provinceId,
+      regionId,
+    };
     const userUpdate = { name };
 
-    console.log(req.file);
     if (req.file) {
       deleteFile(prevUser?.profile?.profilePict, "profile");
       profileUpdate.profilePict = req.file.filename;

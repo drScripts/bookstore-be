@@ -3,8 +3,7 @@ const { Axios } = require("axios");
 const { rajaOngkirKey } = require("../../config");
 
 const axios = new Axios({
-  baseURL: "https://api.rajaongkir.com/starter/city",
-  headers: { key: rajaOngkirKey },
+  baseURL: "https://indonesia-location.herokuapp.com/cities",
 });
 
 /**
@@ -18,7 +17,7 @@ module.exports = async (req, res) => {
     const { province } = req.query;
     const { data } = await axios.get("/", { params: { province } });
 
-    const cities = JSON.parse(data)?.rajaongkir?.results;
+    const cities = JSON.parse(data)?.data?.cities;
 
     res.send({
       status: "success",

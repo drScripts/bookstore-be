@@ -3,7 +3,7 @@ const { Axios } = require("axios").default;
 const { rajaOngkirKey } = require("../../config");
 
 const axios = new Axios({
-  baseURL: "https://api.rajaongkir.com/starter/province",
+  baseURL: "https://indonesia-location.herokuapp.com/provinces",
   headers: {
     key: rajaOngkirKey,
   },
@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
   try {
     const { data } = await axios.get("/");
 
-    const province = JSON.parse(data)?.rajaongkir?.results;
+    const province = JSON.parse(data)?.data?.provinces;
 
     res.send({
       status: "success",

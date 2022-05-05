@@ -2,7 +2,7 @@ const { request, response } = require("express");
 const { User } = require("../../models");
 const Joi = require("joi");
 const { compareSync } = require("bcrypt");
-const { getJwtUser } = require("../../helpers");
+const { getJwtUser, getFileUrl } = require("../../helpers");
 
 /**
  *
@@ -48,6 +48,13 @@ module.exports = async (req, res) => {
       });
 
     delete user.dataValues.password;
+
+    if (user?.profile?.profilePict) {
+      user.profile.profilePict = getFileUrl(
+        user?.profile?.profilePict,
+        "profile"
+      );
+    }
 
     const token = getJwtUser(user);
 

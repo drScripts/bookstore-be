@@ -32,18 +32,34 @@ module.exports = (io) => {
 
     connectedUser[user?.id] = socket.id;
 
-    socket.on("load admin contact", () => loadAdminContact(socket));
-    socket.on("load user contact", () => loadUserContact(socket, user));
-    socket.on("load message", (recipientId) =>
-      loadMessage(socket, recipientId, user)
-    );
-    socket.on("send message"),
-      (recipientId, message) =>
-        sendMessage(socket, io, user, recipientId, message, connectedUser);
+    socket.broadcast.emit("user connected update", connectedUser);
+
+    socket.on("load admin contact", () => {
+      loadAdminContact(socket);
+    });
+
+    socket.on("get connected user", () => {
+      socket.emit("user connected update", connectedUser);
+    });
+
+    socket.on("load user contact", () => {
+      loadUserContact(socket, user);
+    });
+    socket.on("load message", (recipientId) => {
+      loadMessage(socket, recipientId, user);
+    });
+    socket.on("send message", async (recipientId, message) => {
+      await sendMessage(user, recipientId, message);
+
+      io.to(socket.id)
+        .to(connectedUser[recipientId])
+        .emit("new message", recipientId);
+    });
 
     socket.on("disconnect", () => {
       console.log(`User diconnected ${socket.id}`);
-      connectedUser.splice(user?.id, 1);
+      delete connectedUser[user?.id];
+      socket.broadcast.emit("user connected update", connectedUser);
     });
   });
 };

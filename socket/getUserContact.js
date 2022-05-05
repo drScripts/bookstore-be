@@ -1,4 +1,5 @@
 const { Socket } = require("socket.io");
+const { getFileUrl } = require("../helpers");
 const { Chat, User } = require("../models");
 
 /**
@@ -13,6 +14,10 @@ module.exports = async (socket, admin) => {
         as: "sender",
         model: User,
         foreignKey: "senderId",
+        include: "profile",
+        attributes: {
+          exclude: ["password"],
+        },
       },
       order: [["createdAt", "ASC"]],
     });
@@ -20,6 +25,12 @@ module.exports = async (socket, admin) => {
     const contact = {};
 
     chats.forEach((chat) => {
+      if (chat?.sender?.profile?.profilePict) {
+        chat.sender.profile.profilePict = getFileUrl(
+          chat?.sender?.profile?.profilePict,
+          "profile"
+        );
+      }
       contact[chat.senderId] = chat;
     });
 

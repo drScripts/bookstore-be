@@ -2,7 +2,7 @@ const { request, response } = require("express");
 const Joi = require("joi");
 const { hashSync } = require("bcrypt");
 const { User, UserProfile } = require("../../models");
-const { getJwtUser } = require("../../helpers");
+const { getJwtUser, getFileUrl } = require("../../helpers");
 
 /**
  *
@@ -55,6 +55,13 @@ module.exports = async (req, res) => {
     });
 
     const token = getJwtUser(newUser);
+
+    if (newUser?.profile?.profilePict) {
+      newUser.profile.profilePict = getFileUrl(
+        newUser?.profile?.profilePict,
+        "profile"
+      );
+    }
 
     res.status(201).json({
       status: "created",

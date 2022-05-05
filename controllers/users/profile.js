@@ -5,7 +5,7 @@ const {
   Transaction,
   TransactionItem,
 } = require("../../models");
-const { Model } = require("sequelize");
+const { getFileUrl } = require("../../helpers");
 
 /**
  *
@@ -36,6 +36,13 @@ module.exports = async (req, res) => {
         },
       ],
     });
+
+    if (user?.profile?.profilePict) {
+      user.profile.profilePict = getFileUrl(
+        user?.profile?.profilePict,
+        "profile"
+      );
+    }
 
     res.send({
       status: "success",

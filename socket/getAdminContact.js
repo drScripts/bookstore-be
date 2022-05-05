@@ -17,10 +17,12 @@ module.exports = async (socket) => {
     });
 
     if (admin) {
-      admin.profile.profilePict = getFileUrl(
-        admin?.profile?.profilePict,
-        "profile"
-      );
+      if (admin?.profile?.profilePict) {
+        admin.profile.profilePict = getFileUrl(
+          admin?.profile?.profilePict,
+          "profile"
+        );
+      }
     }
 
     socket.emit("admin contact loaded", admin);

@@ -11,10 +11,12 @@ module.exports = async (req, res) => {
   try {
     const books = await Book.findAll({
       order: [["createdAt", "DESC"]],
+      attributes: {
+        exclude: ["bookAttachment"],
+      },
     });
 
     const mappedBooks = books.map((book) => {
-      book.bookAttachment = getFileUrl(book?.bookAttachment, "pdf");
       book.thumbnail = getFileUrl(book?.thumbnail, "image");
 
       return book;
