@@ -7,6 +7,7 @@ module.exports = {
     database: dbName,
     host: dbHost,
     dialect: dbDialect,
+    logging: false,
   },
   test: {
     username: dbUser,

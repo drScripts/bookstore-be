@@ -35,6 +35,7 @@ module.exports = {
             tableName: "books",
           },
         },
+        onDelete: "CASCADE",
       },
       qty: {
         type: Sequelize.INTEGER,

@@ -25,6 +25,7 @@ module.exports = {
             tableName: "users",
           },
         },
+        onDelete: "CASCADE",
       },
       recipientId: {
         type: Sequelize.INTEGER,
@@ -35,6 +36,7 @@ module.exports = {
             tableName: "users",
           },
         },
+        onDelete: "CASCADE",
       },
       message: {
         type: Sequelize.TEXT,

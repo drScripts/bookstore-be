@@ -1,7 +1,7 @@
 const { request, response } = require("express");
 const { Book } = require("../../models");
 const Joi = require("joi");
-const { deleteFile, getFileUrl } = require("../../helpers");
+const { deleteFile, getFileUrl, deleteFileByPath } = require("../../helpers");
 
 /**
  *

@@ -37,6 +37,24 @@ module.exports = async (req, res) => {
       ],
     });
 
+    const transactionMapped = user?.transaction?.map((transaction) => {
+      const transactionItemsMapped = transaction?.transactionItems?.map(
+        (item) => {
+          item.book.thumbnail = getFileUrl(item?.book?.thumbnail, "image");
+          item.book.bookAttachment = getFileUrl(
+            item?.book?.bookAttachment,
+            "pdf"
+          );
+
+          return item;
+        }
+      );
+      transaction.transactionItems = transactionItemsMapped;
+      return transaction;
+    });
+
+    user.transaction = transactionMapped;
+
     if (user?.profile?.profilePict) {
       user.profile.profilePict = getFileUrl(
         user?.profile?.profilePict,

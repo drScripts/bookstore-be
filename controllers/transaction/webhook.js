@@ -2,6 +2,8 @@ const { request, response } = require("express");
 const { Snap } = require("midtrans-client");
 const { midtransServerKey, midtransIsProduction } = require("../../config");
 const { Transaction, TransactionLog } = require("../../models");
+const { emailInvoiceHtml, sendMail } = require("../../helpers");
+const moment = require("moment");
 
 /**
  *
@@ -22,8 +24,21 @@ module.exports = async (req, res) => {
       let transactionStatus = statusResponse.transaction_status;
       let fraudStatus = statusResponse.fraud_status;
 
-      const transaction = await Transaction.findByPk(transactionId);
+      const transaction = await Transaction.findByPk(transactionId, {
+        include: "user",
+      });
       if (!transaction) return res.send({ status: "OK" });
+
+      const date = moment().format("DD, MMMM YYYY H:m:s");
+
+      const bodyEmail = emailInvoiceHtml(
+        date,
+        transaction?.total,
+        transaction?.user?.name,
+        date,
+        statusResponse?.order_id,
+        transaction?.rawBody
+      );
 
       let status = "pending";
 
@@ -31,9 +46,11 @@ module.exports = async (req, res) => {
         if (fraudStatus == "challenge") {
         } else if (fraudStatus == "accept") {
           status = "approve";
+          await sendMail(bodyEmail, transaction?.user?.email);
         }
       } else if (transactionStatus == "settlement") {
         status = "approve";
+        await sendMail(bodyEmail, transaction?.user?.email);
       } else if (transactionStatus == "deny") {
         status = "cancel";
       } else if (
@@ -58,7 +75,7 @@ module.exports = async (req, res) => {
         rawBody: req.body,
       });
 
-      res.send(200);
+      res.sendStatus(200);
     });
   } catch (err) {
     console.log(err);

@@ -18,8 +18,11 @@ module.exports = async (req, res) => {
     });
 
     const promoBooks = promo.map((promo) => {
-      promo.thumbnail = getFileUrl(promo?.thumbnail, "image");
-      promo.bookAttachment = getFileUrl(promo?.bookAttachment, "pdf");
+      promo.book.thumbnail = getFileUrl(promo?.book?.thumbnail, "image");
+      promo.book.bookAttachment = getFileUrl(
+        promo?.book?.bookAttachment,
+        "pdf"
+      );
       return promo;
     });
 

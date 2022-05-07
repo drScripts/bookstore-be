@@ -1,5 +1,5 @@
 const { request, response } = require("express");
-const { Transaction, TransactionItem, Book } = require("../../models");
+const { Transaction, TransactionItem, Book, User } = require("../../models");
 const { getFileUrl } = require("../../helpers");
 
 /**
@@ -10,18 +10,24 @@ const { getFileUrl } = require("../../helpers");
  */
 module.exports = async (req, res) => {
   try {
-    const { id: userId } = req.user;
-
     const rawTransactions = await Transaction.findAll({
-      where: { userId },
-      include: {
-        as: "transactionItems",
-        model: TransactionItem,
-        include: {
-          as: "book",
-          model: Book,
+      include: [
+        {
+          as: "transactionItems",
+          model: TransactionItem,
+          include: {
+            as: "book",
+            model: Book,
+          },
         },
-      },
+        {
+          as: "user",
+          model: User,
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+      ],
     });
 
     const transactions = await rawTransactions.map((transaction) => {

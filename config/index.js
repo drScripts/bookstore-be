@@ -14,4 +14,7 @@ module.exports = {
   midtransIsProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
   rajaOngkirKey: process.env.RAJA_ONGKIR_KEY,
   rajaOngkirBaseRegion: process.env.RAJA_ONGKIR_REGION_PLACE,
+  clientBaseUrl: process.env.CLIENT_BASE_URL,
+  sendinBluePass: process.env.SENDINBLUE_PASS,
+  sendinBlueUser: process.env.SENDINBLUE_USER,
 };
