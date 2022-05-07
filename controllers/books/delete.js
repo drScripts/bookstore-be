@@ -1,6 +1,6 @@
 const { request, response } = require("express");
 const { Book } = require("../../models");
-const { deleteFile } = require("../../helpers");
+const { deleteFile, deleteCloudFile } = require("../../helpers");
 
 /**
  *
@@ -21,6 +21,11 @@ module.exports = async (req, res) => {
 
     deleteFile(book?.bookAttachment, "pdf");
     deleteFile(book?.thumbnail, "image");
+
+    if (process.env.NODE_ENV !== "production") {
+      await deleteCloudFile(book?.bookAttachment);
+      await deleteCloudFile(book?.thumbnail);
+    }
 
     await book.destroy();
 

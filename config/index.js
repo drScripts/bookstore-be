@@ -17,4 +17,7 @@ module.exports = {
   clientBaseUrl: process.env.CLIENT_BASE_URL,
   sendinBluePass: process.env.SENDINBLUE_PASS,
   sendinBlueUser: process.env.SENDINBLUE_USER,
+  cloudinaryName: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
 };

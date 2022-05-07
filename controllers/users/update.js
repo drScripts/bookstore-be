@@ -1,7 +1,12 @@
 const { request, response } = require("express");
 const { User, UserProfile } = require("../../models");
 const Joi = require("joi");
-const { getFileUrl, deleteFile } = require("../../helpers");
+const {
+  getFileUrl,
+  deleteFile,
+  deleteCloudFile,
+  cloudStoreFile,
+} = require("../../helpers");
 
 /**
  *
@@ -58,8 +63,21 @@ module.exports = async (req, res) => {
     const userUpdate = { name };
 
     if (req.file) {
-      deleteFile(prevUser?.profile?.profilePict, "profile");
-      profileUpdate.profilePict = req.file.filename;
+      if (process.env.NODE_ENV !== "production") {
+        if (prevUser?.profile?.profilePict?.search("http") !== -1) {
+          deleteCloudFile(prevUser?.profile?.profilePict);
+        }
+
+        const { secure_url } = await cloudStoreFile(
+          req.file,
+          "ways_book_profile"
+        );
+
+        profileUpdate.profilePict = secure_url;
+      } else {
+        deleteFile(prevUser?.profile?.profilePict, "profile");
+        profileUpdate.profilePict = req.file.filename;
+      }
     }
 
     await UserProfile.update(profileUpdate, {

@@ -8,10 +8,14 @@ const {
   sendinBlueUser,
   sendinBluePass,
   clientBaseUrl,
+  cloudinaryApiKey,
+  cloudinaryApiSecret,
+  cloudinaryName,
 } = require("../config");
 const { sign } = require("jsonwebtoken");
 const { Snap } = require("midtrans-client");
 const { createTransport } = require("nodemailer");
+const cloudinary = require("cloudinary").v2;
 
 const deleteFileByPath = (filePath) => {
   if (fs.existsSync(filePath)) {
@@ -20,7 +24,11 @@ const deleteFileByPath = (filePath) => {
 };
 
 const getFileUrl = (filename, fileFolder) => {
-  return `${baseUrl}/upload/${fileFolder}/${filename}`;
+  if (filename?.search("http") === -1) {
+    return `${baseUrl}/upload/${fileFolder}/${filename}`;
+  }
+
+  return filename;
 };
 
 const deleteFile = (filename, fileFolder) => {
@@ -802,6 +810,40 @@ const emailInvoiceHtml = (
  `;
 };
 
+const cloudStoreFile = async (file, folderName) => {
+  cloudinary.config({
+    api_key: cloudinaryApiKey,
+    api_secret: cloudinaryApiSecret,
+    cloud_name: cloudinaryName,
+  });
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    file?.path,
+    {
+      use_filename: true,
+      unique_filename: false,
+      folder: folderName,
+    }
+  );
+
+  return { secure_url, public_id };
+};
+
+const deleteCloudFile = async (fileUrl) => {
+  cloudinary.config({
+    api_key: cloudinaryApiKey,
+    api_secret: cloudinaryApiSecret,
+    cloud_name: cloudinaryName,
+  });
+
+  let publicId = "";
+
+  const paths = fileUrl?.split("/");
+
+  publicId += paths[paths.length - 2] + "/" + paths.pop().split(".")[0];
+
+  await cloudinary.uploader.destroy(publicId);
+};
+
 module.exports = {
   deleteFileByPath,
   getFileUrl,
@@ -811,4 +853,6 @@ module.exports = {
   createSnap,
   sendMail,
   emailInvoiceHtml,
+  cloudStoreFile,
+  deleteCloudFile,
 };

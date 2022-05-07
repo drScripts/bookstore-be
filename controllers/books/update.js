@@ -1,7 +1,13 @@
 const { request, response } = require("express");
 const { Book } = require("../../models");
 const Joi = require("joi");
-const { deleteFile, getFileUrl, deleteFileByPath } = require("../../helpers");
+const {
+  deleteFile,
+  getFileUrl,
+  deleteFileByPath,
+  deleteCloudFile,
+  cloudStoreFile,
+} = require("../../helpers");
 
 /**
  *
@@ -73,14 +79,39 @@ module.exports = async (req, res) => {
     if (req.files) {
       if (req.files?.pdf) {
         deleteFile(book?.bookAttachment, "pdf");
-        const name = req?.files?.pdf[0]?.path?.split("\\").pop();
-        bodyDataUpdate.bookAttachment = name;
+
+        let fileName;
+
+        if (process.env.NODE_ENV !== "production") {
+          deleteCloudFile(book?.bookAttachment);
+          const { secure_url } = await cloudStoreFile(
+            req.files?.pdf[0],
+            "ways_book_pdf"
+          );
+          fileName = secure_url;
+        } else {
+          fileName = req?.files?.pdf[0]?.path?.split("\\").pop();
+        }
+        bodyDataUpdate.bookAttachment = fileName;
       }
 
       if (req.files?.image) {
         deleteFile(book?.thumbnail, "image");
-        const name = req?.files?.image[0]?.path?.split("\\").pop();
-        bodyDataUpdate.thumbnail = name;
+
+        let fileName;
+
+        if (process.env.NODE_ENV !== "production") {
+          deleteCloudFile(book?.thumbnail);
+          const { secure_url } = await cloudStoreFile(
+            req.files?.image[0],
+            "ways_book_thumbnail"
+          );
+          fileName = secure_url;
+        } else {
+          fileName = req?.files?.image[0]?.path?.split("\\").pop();
+        }
+
+        bodyDataUpdate.thumbnail = fileName;
       }
     }
 

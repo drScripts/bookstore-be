@@ -1,6 +1,6 @@
 const { request, response } = require("express");
 const Joi = require("joi");
-const { deleteFileByPath } = require("../../helpers");
+const { deleteFileByPath, cloudStoreFile } = require("../../helpers");
 const { Book } = require("../../models");
 const moment = require("moment");
 const { getFileUrl } = require("../../helpers");
@@ -59,8 +59,18 @@ module.exports = async (req, res) => {
     const { title, publicationDate, pages, ISBN, author, price, description } =
       req.body;
 
-    const pdfName = req?.files?.pdf[0]?.path?.split("\\")?.pop();
-    const imgName = req?.files?.image[0]?.path?.split("\\")?.pop();
+    let pdfName = req?.files?.pdf[0]?.path?.split("\\")?.pop();
+    let imgName = req?.files?.image[0]?.path?.split("\\")?.pop();
+
+    if (process.env.NODE_ENV !== "production") {
+      const pdf = await cloudStoreFile(req?.files?.pdf[0], "ways_book_pdf");
+      const img = await cloudStoreFile(
+        req?.files?.image[0],
+        "ways_book_thumbnail"
+      );
+      pdfName = pdf.secure_url;
+      imgName = img.secure_url;
+    }
 
     const book = await Book.create({
       title,
