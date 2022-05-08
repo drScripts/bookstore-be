@@ -1,6 +1,6 @@
 "use strict";
 const { QueryInterface, Sequelize } = require("sequelize");
-const { hash } = require("bcrypt");
+const { hashSync } = require("bcrypt");
 
 module.exports = {
   /**
@@ -25,19 +25,10 @@ module.exports = {
         {
           name: "Admin",
           email: "admin@gmail.com",
-          password: hash("admin@123", 10),
+          password: hashSync("admin@123", 10),
           role: "admin",
-        },
-      ],
-      {}
-    );
-    await queryInterface.bulkInsert(
-      "user_profiles",
-      [
-        {
-          gender: "male",
-          phoneNumber: "0123123123",
-          address: "Komplek permata kopo blok ca no 15",
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ],
       {}
