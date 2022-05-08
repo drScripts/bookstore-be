@@ -10,15 +10,18 @@ module.exports = async (socket, admin) => {
   try {
     const chats = await Chat.findAll({
       where: { recipientId: admin.id },
-      include: {
-        as: "sender",
-        model: User,
-        foreignKey: "senderId",
-        include: "profile",
-        attributes: {
-          exclude: ["password"],
+      include: [
+        {
+          as: "sender",
+          model: User,
+          foreignKey: "senderId",
+          include: "profile",
+          attributes: {
+            exclude: ["password"],
+          },
         },
-      },
+        "recipient",
+      ],
       order: [["createdAt", "ASC"]],
     });
 
@@ -31,7 +34,7 @@ module.exports = async (socket, admin) => {
           "profile"
         );
       }
-      contact[chat.senderId] = chat;
+      contact[chat.senderId + chat.recipientId] = chat;
     });
 
     const contacts = [];
