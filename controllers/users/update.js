@@ -64,8 +64,10 @@ module.exports = async (req, res) => {
 
     if (req.file) {
       if (process.env.NODE_ENV === "production") {
-        if (prevUser?.profile?.profilePict?.search("http") !== -1) {
-          deleteCloudFile(prevUser?.profile?.profilePict);
+        if (prevUser?.profile?.profilePict) {
+          if (prevUser?.profile?.profilePict?.search("http") !== -1) {
+            deleteCloudFile(prevUser?.profile?.profilePict);
+          }
         }
 
         const { secure_url } = await cloudStoreFile(
