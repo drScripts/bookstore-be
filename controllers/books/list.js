@@ -38,14 +38,17 @@ module.exports = async (req, res) => {
       }
     }
 
+    const where = {};
+    if (q && q !== "null") {
+      where[Op.or] = whereQuery;
+    }
+
     const books = await Book.findAll({
       order: [["createdAt", "DESC"]],
       attributes: {
         exclude: ["bookAttachment"],
       },
-      where: {
-        [Op.or]: whereQuery,
-      },
+      where: where,
     });
 
     const mappedBooks = books.map((book) => {
