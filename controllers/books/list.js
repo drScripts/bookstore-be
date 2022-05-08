@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const { Book } = require("../../models");
 const { getFileUrl } = require("../../helpers");
+const { Op } = require("sequelize");
 
 /**
  *
@@ -9,10 +10,41 @@ const { getFileUrl } = require("../../helpers");
  */
 module.exports = async (req, res) => {
   try {
+    const whereQuery = {};
+
+    const { q } = req.query;
+
+    if (q && q !== "null") {
+      if (process.env.NODE_ENV === "production") {
+        whereQuery.title = {
+          [Op.iLike]: `%${q}%`,
+        };
+        whereQuery.description = {
+          [Op.iLike]: `%${q}%`,
+        };
+        whereQuery.author = {
+          [Op.iLike]: `%${q}%`,
+        };
+      } else {
+        whereQuery.title = {
+          [Op.like]: `%${q}%`,
+        };
+        whereQuery.description = {
+          [Op.like]: `%${q}%`,
+        };
+        whereQuery.author = {
+          [Op.like]: `%${q}%`,
+        };
+      }
+    }
+
     const books = await Book.findAll({
       order: [["createdAt", "DESC"]],
       attributes: {
         exclude: ["bookAttachment"],
+      },
+      where: {
+        [Op.or]: whereQuery,
       },
     });
 
