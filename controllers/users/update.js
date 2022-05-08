@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
     const userUpdate = { name };
 
     if (req.file) {
-      if (process.env.NODE_ENV !== "production") {
+      if (process.env.NODE_ENV === "production") {
         if (prevUser?.profile?.profilePict?.search("http") !== -1) {
           deleteCloudFile(prevUser?.profile?.profilePict);
         }

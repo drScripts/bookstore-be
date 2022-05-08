@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     deleteFile(book?.bookAttachment, "pdf");
     deleteFile(book?.thumbnail, "image");
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV === "production") {
       await deleteCloudFile(book?.bookAttachment);
       await deleteCloudFile(book?.thumbnail);
     }

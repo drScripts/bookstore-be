@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
     let pdfName = req?.files?.pdf[0]?.path?.split("\\")?.pop();
     let imgName = req?.files?.image[0]?.path?.split("\\")?.pop();
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV === "production") {
       const pdf = await cloudStoreFile(req?.files?.pdf[0], "ways_book_pdf");
       const img = await cloudStoreFile(
         req?.files?.image[0],

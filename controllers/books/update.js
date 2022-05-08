@@ -82,7 +82,7 @@ module.exports = async (req, res) => {
 
         let fileName;
 
-        if (process.env.NODE_ENV !== "production") {
+        if (process.env.NODE_ENV === "production") {
           deleteCloudFile(book?.bookAttachment);
           const { secure_url } = await cloudStoreFile(
             req.files?.pdf[0],
@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
 
         let fileName;
 
-        if (process.env.NODE_ENV !== "production") {
+        if (process.env.NODE_ENV === "production") {
           deleteCloudFile(book?.thumbnail);
           const { secure_url } = await cloudStoreFile(
             req.files?.image[0],
