@@ -34,7 +34,7 @@ module.exports = async (socket, admin) => {
           "profile"
         );
       }
-      contact[chat.senderId + chat.recipientId] = chat;
+      contact[chat.senderId] = chat;
     });
 
     const contacts = [];

@@ -7,6 +7,7 @@ const {
 } = require("../../config");
 const { Transaction, TransactionLog } = require("../../models");
 const moment = require("moment");
+const { sendMail, emailInvoiceHtml } = require("../../helpers");
 
 /**
  *
@@ -32,15 +33,25 @@ module.exports = async (req, res) => {
       const transaction = await Transaction.findByPk(transactionId);
       if (!transaction) return res.send({ status: "OK" });
       const date = moment().format("DD, MMMM YYYY H:m:s");
+      const bodyEmail = emailInvoiceHtml(
+        date,
+        transaction?.total,
+        transaction?.user?.name,
+        date,
+        statusResponse?.order_id,
+        transaction?.rawBody
+      );
 
       let status = "pending";
 
       if (transactionStatus == "capture") {
         if (fraudStatus == "challenge") {
         } else if (fraudStatus == "accept") {
+          await sendMail(bodyEmail, transaction?.user?.email);
           status = "approve";
         }
       } else if (transactionStatus == "settlement") {
+        await sendMail(bodyEmail, transaction?.user?.email);
         status = "approve";
       } else if (transactionStatus == "deny") {
         status = "cancel";
